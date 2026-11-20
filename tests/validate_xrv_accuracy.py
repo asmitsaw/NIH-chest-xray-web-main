@@ -29,9 +29,9 @@ def print_section(title):
     print("=" * 70)
 
 def validate_reproducible_suite():
-    print_section("PHASE K — TORCHXRAYVISION VALIDATION & VERIFICATION SUITE")
+    print_section("PHASE K — Densenet121 VALIDATION & VERIFICATION SUITE")
     print(f"Base Directory: {BASE_DIR}")
-    print(f"Target Model: TorchXRayVision densenet121-res224-all")
+    print(f"Target Model: Densenet121-res224-all")
 
     # 1. Check Model Adapter and Pathology Heads
     print_section("1. Output Semantics and Pathology Heads Audit")
