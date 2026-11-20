@@ -14,13 +14,15 @@ chest_x_ai.db Your original SQLite database (the Node API reads and writes it)
 
 ```bash
 npm run setup      # installs server, client and Python dependencies
-npm run build      # builds the React app
 npm run ml         # terminal 1: AI service on :5001
-npm start          # terminal 2: web app + API on :4000
+npm run dev:api    # terminal 2: REST API on :4000
+npm run dev:client # terminal 3: React web UI on :5173
 ```
-Open http://localhost:4000. On Windows, `start.bat` does the last two steps.
+Open **http://localhost:5173**. On Windows, `start.bat` launches all three subsystems automatically and opens the UI in your default browser.
 
-For development: `npm run dev:api` and `npm run dev:client`, then open http://localhost:5173.
+- **UI Web App**: `http://localhost:5173` (Vite React Client)
+- **Backend API**: `http://localhost:4000` (Node.js + Express REST API)
+- **AI Microservice**: `http://127.0.0.1:5001` (Python Flask DenseNet-121 inference)
 
 ## Demo accounts
 doctor `dr.smith` / `doctor123`, patient `patient.john` / `patient123`, admin `admin` / `admin123`.

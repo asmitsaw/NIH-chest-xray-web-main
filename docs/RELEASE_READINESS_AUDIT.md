@@ -162,10 +162,11 @@ To launch Chest-X AI v2 from a fresh clone:
    npm run build
    ```
 5. **Start Services**:
-   - On Windows: Double-click `start.bat` (launches Flask on port 5001, Express on port 4000, and opens browser).
-   - Or manually in two terminal tabs:
+   - On Windows: Double-click `start.bat` (launches Flask on port 5001, Express API on port 4000, React UI on port 5173, and opens browser at http://localhost:5173).
+   - Or manually across three terminal tabs:
      - Terminal 1: `npm run ml` (runs Flask microservice on port 5001)
-     - Terminal 2: `npm start` (runs Express API on port 4000)
+     - Terminal 2: `npm run dev:api` (runs Express API on port 4000)
+     - Terminal 3: `npm run dev:client` (runs React UI on port 5173)
 6. **Execute Automated Verification**:
    ```bash
    npm test          # Runs backend unit tests and ML unit tests

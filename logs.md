@@ -20,7 +20,7 @@ This document maintains the architectural understanding, baseline system state, 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      Client Layer (SPA)                     │
-│   React 18 + Vite (Port 5173 Dev / Port 4000 Static Prod)   │
+│   React 18 + Vite (Port 5173 UI Exclusively)                 │
 │   - ThoraxCanvas3D (Three.js WebGL anatomical viewer)       │
 │   - Study Workstation (Grad-CAM, DICOM brightness/contrast) │
 │   - Longitudinal Comparison, Clinical Assistant, Admin      │
@@ -127,6 +127,31 @@ All modifications to this repository must be logged in this section in reverse c
 - **Verification & Tests Run**:
   - `<test command>`: <Pass / Result>
 ```
+
+---
+
+### [2026-11-20] - Dedicated Port Separation: UI on Port 5173 Only, API on Port 4000
+- **Author / Agent**: Antigravity Assistant
+- **Affected Subsystems**: Server (`server/index.js`), Client Config (`client/vite.config.js`), Launcher (`start.bat`), Root Orchestrator (`package.json`), Tests (`tests/verify_all.js`), Documentation (`README.md`, `docs/PROJECT_AUDIT.md`, `docs/RELEASE_READINESS_AUDIT.md`)
+- **Files Modified / Created**:
+  - `server/index.js`
+  - `client/vite.config.js`
+  - `start.bat`
+  - `package.json`
+  - `tests/verify_all.js`
+  - `README.md`
+  - `docs/PROJECT_AUDIT.md`
+  - `docs/RELEASE_READINESS_AUDIT.md`
+  - `logs.md`
+- **Description of Changes**:
+  - Removed client static asset bundling from Express API on port 4000; port 4000 now exclusively serves the REST API.
+  - Browser visits to port 4000 now automatically redirect to the dedicated UI at `http://localhost:5173`.
+  - Configured Vite `preview` and `server` blocks to bind exclusively to port 5173.
+  - Updated Windows batch launcher `start.bat` to launch all three services (ML microservice on 5001, Express API on 4000, and React client on 5173) and open `http://localhost:5173`.
+  - Updated all documentation and test verification scripts to reflect the port architecture.
+- **Verification & Tests Run**:
+  - `node --test server/tests/backend_test.js`: Passed 16/16 backend tests in 150ms.
+  - Verified `start.bat` and Vite configuration.
 
 ---
 

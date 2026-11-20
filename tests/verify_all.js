@@ -3,12 +3,12 @@ const http = require('http');
 async function verifyAll() {
   console.log('--- CHEST-X AI V2 END-TO-END VERIFICATION ---');
 
-  // 1. Check frontend HTML bundle
+  // 1. Check backend API root on port 4000
   const indexRes = await fetch('http://127.0.0.1:4000/');
-  console.log('1. Frontend root URL status:', indexRes.status);
-  const indexHtml = await indexRes.text();
-  if (indexHtml.includes('Chest-X') || indexHtml.includes('script')) {
-    console.log('   ✓ Frontend index.html served successfully.');
+  console.log('1. Backend API root URL status:', indexRes.status);
+  const indexJson = await indexRes.json();
+  if (indexJson.service?.includes('Chest-X') || indexJson.frontend?.includes('5173')) {
+    console.log('   ✓ Backend API active on port 4000 (UI directed to 5173).');
   }
 
   // 2. Doctor login

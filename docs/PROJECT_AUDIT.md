@@ -97,9 +97,9 @@ MODEL_PATH=models/weights/weights.best.05-1.74.hdf5
 2. **Ephemeral JWT Secret**: In [server/index.js:12](file:///d:/chestx-ai-v2/server/index.js#L12), `process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex')` is used. Without a `.env` file or exported variable, every server restart generates a new secret key, invalidating all issued patient, doctor, and admin JWTs.
 3. **Missing `.env` Loading Mechanism in Server**: Neither [server/package.json](file:///d:/chestx-ai-v2/server/package.json) nor [server/index.js](file:///d:/chestx-ai-v2/server/index.js) imports `dotenv` or runs `node --env-file=.env`. Node 24 supports native `--env-file`, which should be wired into `server/package.json`.
 4. **Port Allocation**:
-   - Web application & REST API: `http://localhost:4000`
+   - Web application UI: `http://localhost:5173` (Vite React Client)
+   - Backend REST API: `http://localhost:4000` (Node.js + Express API)
    - ML inference service: `http://127.0.0.1:5001` (internal loopback only)
-   - Vite development server (if run in dev mode): `http://localhost:5173`
 
 ---
 

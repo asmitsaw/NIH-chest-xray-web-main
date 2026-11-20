@@ -714,12 +714,27 @@ app.get('/api/admin/health', auth, roles('ADMIN'), wrap(async (_r, res) => {
   res.json({ api: true, database: dbOk, ml: mlh });
 }));
 
-// ---------- static client (production) + errors ----------
-const dist = path.join(ROOT, 'client', 'dist');
-if (fs.existsSync(dist)) {
-  app.use(express.static(dist));
-  app.use((req, res, next) => (req.method === 'GET' && !req.path.startsWith('/api') ? res.sendFile(path.join(dist, 'index.html')) : next()));
-}
+// ---------- non-API routing (UI is hosted exclusively on port 5173) + error handlers ----------
+app.get('/', (req, res) => {
+  if (req.accepts('html')) {
+    return res.redirect('http://localhost:5173');
+  }
+  res.json({
+    service: 'Chest-X AI REST API',
+    status: 'online',
+    version: '2.0.0',
+    port: PORT,
+    frontend: 'http://localhost:5173'
+  });
+});
+
+app.use((req, res, next) => {
+  if (!req.path.startsWith('/api') && req.method === 'GET' && req.accepts('html')) {
+    return res.redirect(`http://localhost:5173${req.url}`);
+  }
+  next();
+});
+
 app.use('/api', (_q, res) => res.status(404).json({ error: 'Not found.' }));
 app.use((err, _req, res, _next) => {
   const status = err.status || (err.code === 'LIMIT_FILE_SIZE' ? 413 : (err.name === 'MulterError' ? 400 : 500));

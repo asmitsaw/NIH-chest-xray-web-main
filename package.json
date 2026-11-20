@@ -5,6 +5,8 @@
     "setup": "npm --prefix server install && npm --prefix client install && pip install -r requirements.txt",
     "build": "npm --prefix client run build",
     "start": "npm --prefix server start",
+    "client": "npm --prefix client run dev",
+    "api": "npm --prefix server run dev",
     "dev:api": "npm --prefix server run dev",
     "dev:client": "npm --prefix client run dev",
     "ml": "python ml_service/app.py",
