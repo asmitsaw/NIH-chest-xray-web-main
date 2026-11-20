@@ -585,9 +585,9 @@ export default function HeroPage() {
 
             <div style={{ background: '#fff', padding: 24, borderRadius: 14, border: '1px solid #dce9ff', boxShadow: '0 2px 8px rgba(11,28,48,0.03)' }}>
               <div style={{ width: 36, height: 36, borderRadius: 8, background: '#eff4ff', color: '#087f8c', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, marginBottom: 16 }}>2</div>
-              <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 8px', color: '#0b1c30' }}>TorchXRayVision DenseNet Inference</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 8px', color: '#0b1c30' }}>DenseNet-121 Inference</h3>
               <p style={{ fontSize: 13, color: '#3e494a', lineHeight: 1.5 }}>
-                Pretrained DenseNet-121 (densenet121-res224-all) evaluates 14 thoracic findings, computing independent multi-label sigmoid probabilities evaluated against operating thresholds.
+                DenseNet-121 evaluates 14 thoracic findings, computing independent multi-label sigmoid probabilities evaluated against operating thresholds.
               </p>
             </div>
 
@@ -674,7 +674,7 @@ export default function HeroPage() {
               Chest-X AI v2 / Chest-X AI Decision Support System
             </h3>
             <p style={{ fontSize: 13, color: '#3e494a', lineHeight: 1.6, marginTop: 10 }}>
-              Developed as an educational and research decision-support prototype. TorchXRayVision DenseNet-121 weights (Wang et al., IEEE CVPR 2017 & Cohen et al., 2022). Patient data is encrypted and partitioned strictly by medical record number.
+              Developed as an educational and research decision-support prototype. DenseNet-121 weights (Wang et al., IEEE CVPR 2017). Patient data is encrypted and partitioned strictly by medical record number.
             </p>
           </div>
         </section>

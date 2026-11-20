@@ -80,7 +80,7 @@ MANDATORY_DISCLAIMER: str = (
 )
 
 MODEL_LIMITATIONS_NOTE: str = (
-    "Note on Architecture & Training: Powered by TorchXRayVision DenseNet-121 (densenet121-res224-all), "
+    "Note on Architecture & Training: Powered by DenseNet-121, "
     "pretrained across 800,000+ radiographs (NIH ChestX-ray14, CheXpert, MIMIC-CXR, PadChest) with "
     "independent Sigmoid activations and documented operating thresholds. Serves as clinical decision "
     "support; primary diagnosis must be established by a licensed physician."

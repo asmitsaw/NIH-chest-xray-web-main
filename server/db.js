@@ -138,7 +138,7 @@ export function initDb(forceReset = false) {
 
   ins(
     `INSERT INTO ai_predictions (study_id, model_version, inference_time_ms, raw_scores_json, primary_findings_json, threshold_used, warning_notes, created_at) VALUES (?,?,?,?,?,?,?,?)`,
-    s1, '2.0.0-torchxrayvision-densenet121', 68.4, JSON.stringify(scores1), JSON.stringify(primary1), 0.5, '', now()
+    s1, 'DenseNet-121', 68.4, JSON.stringify(scores1), JSON.stringify(primary1), 0.5, '', now()
   );
 
   ins(

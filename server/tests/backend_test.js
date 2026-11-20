@@ -4,12 +4,13 @@ import { DatabaseSync } from 'node:sqlite';
 import crypto from 'node:crypto';
 import path from 'node:path';
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import jwt from 'jsonwebtoken';
 
 import { hashPassword, verifyPassword } from '../db.js';
 
 // Setup isolated temporary test database to ensure production DB is never mutated during tests
-const TEST_DB_PATH = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), 'test_chestx.db');
+const TEST_DB_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), 'test_chestx.db');
 const TEST_JWT_SECRET = 'test-secret-must-be-at-least-32-chars-long-for-valid-security-checks!!';
 
 let testDb;

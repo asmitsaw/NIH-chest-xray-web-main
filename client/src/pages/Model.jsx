@@ -13,7 +13,7 @@ export default function Model() {
         <section className="panel">
           <div className="hd"><h2>Model Architecture & Decision Support Guidelines</h2></div>
           <div className="bd stack" style={{ maxWidth: '72ch' }}>
-            <p>Chest-X AI v2 incorporates the pretrained TorchXRayVision DenseNet-121 (<code>densenet121-res224-all</code>) multi-dataset model. Radiographs are normalized to 224 × 224 in [-1024, 1024] range with aspect-ratio-preserving center crops.</p>
+            <p>Chest-X AI v2 incorporates the DenseNet-121 model. Radiographs are normalized to 224 × 224 in [-1024, 1024] range with aspect-ratio-preserving center crops.</p>
             <p>The model outputs independent multi-label Sigmoid probabilities across 14 canonical NIH findings (plus 4 multi-dataset heads). Findings are ranked by their score relative to empirical operating thresholds (<code>op_threshs</code>) calibrated on hospital datasets.</p>
             <p>Operating thresholds are sensitivity decision-support operating points, not proof of pathology. Scores exceeding operating thresholds indicate findings warranting clinical review by a licensed radiologist.</p>
             <p className="faint small">Grad-CAM provides feature attribution heatmaps on <code>denseblock4</code> to highlight regions driving model score elevation. Grad-CAM visualizes network attention and does not constitute diagnostic proof.</p>

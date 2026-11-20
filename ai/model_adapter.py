@@ -261,9 +261,9 @@ class TorchXRayVisionDenseNetAdapter(AbstractModelAdapter):
 
     def get_metadata(self) -> Dict[str, Any]:
         return {
-            "model_name": "TorchXRayVision DenseNet-121",
-            "version": "2.0.0-torchxrayvision-densenet121",
-            "weights_path": f"torchxrayvision://{self.weights}",
+            "model_name": "DenseNet-121",
+            "version": "DenseNet-121",
+            "weights_path": f"{self.weights}",
             "input_shape": [1, 1, 224, 224],
             "num_classes": len(DISEASE_CLASSES),
             "classes": DISEASE_CLASSES,

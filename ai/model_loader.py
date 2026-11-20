@@ -37,7 +37,7 @@ def get_model_adapter(
         meta = _GLOBAL_ADAPTER.get_metadata()
         is_same_backend = (
             (selected_backend == "keras" and "Baseline CNN" in meta.get("model_name", "")) or
-            (selected_backend != "keras" and "TorchXRayVision" in meta.get("model_name", ""))
+            (selected_backend != "keras" and ("DenseNet-121" in meta.get("model_name", "") or "TorchXRayVision" in meta.get("model_name", "")))
         )
         if is_same_backend and _GLOBAL_ADAPTER.is_loaded:
             return _GLOBAL_ADAPTER
@@ -47,7 +47,7 @@ def get_model_adapter(
         adapter = KerasSequentialAdapter(model_path=selected_path)
     else:
         weights = os.environ.get("TORCHXRAYVISION_WEIGHTS", "all")
-        logger.info(f"Loading TorchXRayVision DenseNet-121 (weights: {weights})")
+        logger.info(f"Loading DenseNet-121 (weights: {weights})")
         adapter = TorchXRayVisionDenseNetAdapter(weights=weights)
         
     _GLOBAL_ADAPTER = adapter

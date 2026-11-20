@@ -58,7 +58,7 @@ export default function Study() {
           <div className="meta">
             <div>MRN<b>{s.mrn}</b></div><div>Age / sex<b>{s.age} · {s.gender}</b></div>
             <div>Attending<b>{s.doctor_name || 'Unassigned'}</b></div>
-            {s.prediction && <div>Model<b>{s.prediction.model_version} · {Math.round(s.prediction.inference_time_ms)} ms</b></div>}
+            {s.prediction && <div>Model<b>{(s.prediction.model_version || '').replace(/.*torchxrayvision.*/i, 'DenseNet-121') || 'DenseNet-121'} · {Math.round(s.prediction.inference_time_ms)} ms</b></div>}
           </div>
           <div className="viewer">
             <div className="viewer-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
@@ -124,7 +124,7 @@ export default function Study() {
             s.prediction ? (<>
               <Ladder scores={s.prediction.scores} selected={sel} onSelect={setSel} />
               <p className="small faint" style={{ padding: '0 14px 14px' }}>
-                TorchXRayVision DenseNet-121 outputs independent multi-label probabilities calibrated against dataset operating thresholds (op_threshs). Amber markers indicate sensitivity operating points; scores are decision-support estimates and require clinical physician correlation.
+                DenseNet-121 outputs independent multi-label probabilities calibrated against dataset operating thresholds (op_threshs). Amber markers indicate sensitivity operating points; scores are decision-support estimates and require clinical physician correlation.
               </p>
             </>) : (
               <div className="bd stack"><p className="muted">This study has not been analysed yet.</p><div><button className="btn primary" disabled={busy} onClick={analyse}>{busy ? 'Analysing…' : 'Analyse now'}</button></div></div>)

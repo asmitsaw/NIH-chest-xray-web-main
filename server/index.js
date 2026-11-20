@@ -676,7 +676,7 @@ app.get('/api/performance', auth, (_req, res) => res.json({
   images: [{ file: 'deep_trained_model.png', title: 'Deep model: ROC curves per finding' }, { file: 'quick_trained_model.png', title: 'Quick baseline: ROC curves per finding' }]
     .filter((i) => fs.existsSync(path.join(ROOT, 'results', i.file))),
   architecture: [
-    ['Architecture', 'DenseNet-121 (TorchXRayVision densenet121-res224-all)'],
+    ['Architecture', 'DenseNet-121'],
     ['Input Dimensions', '224 × 224 × 1 grayscale, normalized [-1024, 1024]'],
     ['Feature Backbone', 'DenseBlocks 1-4 with Transition Layers and BatchNorm'],
     ['Output Head', 'Multi-label Independent Sigmoid (14 NIH findings + 4 multi-dataset heads)'],

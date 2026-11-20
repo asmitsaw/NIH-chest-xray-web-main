@@ -87,7 +87,7 @@ export function generateStudyReportPdf(study, res) {
 
   // --- SECTION: AI ANALYSIS ---
   doc.fillColor(colors.primary).font('Helvetica-Bold').fontSize(10.5).text('AI-ASSISTED MULTI-LABEL PATHOLOGY DETECTION', 40, curY);
-  const modelVer = study.prediction?.model_version || 'TorchXRayVision DenseNet-121';
+  const modelVer = study.prediction?.model_version || 'DenseNet-121';
   doc.fillColor(colors.mutedText).font('Helvetica').fontSize(8.5).text(`Engine: ${modelVer} · Independent Sigmoid Activation`, 310, curY + 2, { align: 'right', width: 245 });
   curY += 16;
 
