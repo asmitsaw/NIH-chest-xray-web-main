@@ -23,9 +23,8 @@ export default function Login() {
   return (
     <div className="login">
       <section className="login-art" aria-hidden="false">
-        <div className="login-brand">
-          <span className="login-brand-icon">♧</span>
-          <div><b>Chest-X AI</b><small>Radiograph decision support</small></div>
+        <div className="login-brand" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <img src="/chestx-logo.png" alt="Chest-X AI" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
         </div>
         <div className="login-art-copy">
           <h1>Read the film. See why the model flagged it.</h1>
@@ -57,11 +56,8 @@ export default function Login() {
           <form className="login-fields" onSubmit={(e) => { e.preventDefault(); go(u, p); }}>
             <label className="field"><span>{selectedRole.label} username</span><input type="text" autoComplete="username" value={u} onChange={(e) => setU(e.target.value)} required /></label>
             <label className="field"><span>Password</span><input type="password" autoComplete="current-password" value={p} onChange={(e) => setP(e.target.value)} required /></label>
-            <button className="btn primary" disabled={busy}>{busy ? 'Signing in…' : `Sign in as ${selectedRole.label.toLowerCase()}`}</button>
+            <button className="btn primary" disabled={busy}>{busy ? 'Signing in…' : `Sign in as ${selectedRole.label}`}</button>
           </form>
-          <button className="demo-login" type="button" disabled={busy} onClick={() => go(selectedRole.username, selectedRole.password)}>
-            Sign in as {selectedRole.label === 'Admin' ? 'Administrator' : selectedRole.label}
-          </button>
           {selectedRole.id === 'PATIENT' && <Link className="register-link" to="/register">New patient? Create an account</Link>}
           <Link className="back-link" to="/">← Back to the overview page</Link>
         </div>

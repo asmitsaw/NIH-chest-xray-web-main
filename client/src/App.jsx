@@ -35,7 +35,9 @@ export default function App() {
   return (
     <div className="shell">
       <aside className="rail">
-        <div className="brand">Chest-X<small>Radiograph decision support</small></div>
+        <div className="brand" style={{ padding: '12px 14px', display: 'flex', alignItems: 'center' }}>
+          <img src="/chestx-logo.png" alt="Chest-X AI" style={{ height: 38, width: 'auto', objectFit: 'contain' }} />
+        </div>
         <div className="rail-label">CLINICAL</div>
         <nav aria-label="Main">{NAV[user.role].map(([to, t]) => <NavLink key={to} to={to} end={to === '/'}>{t}</NavLink>)}</nav>
         <div className="me"><b>{user.full_name}</b>{user.role === 'DOCTOR' ? 'Doctor' : user.role === 'ADMIN' ? 'Administrator' : 'Patient'}<br /><button onClick={logout}>Sign out</button></div>

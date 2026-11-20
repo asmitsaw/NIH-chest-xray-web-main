@@ -316,8 +316,126 @@ app.get('/api/patients/:id', auth, roles('DOCTOR', 'ADMIN'), (req, res) => {
   res.json({ patient: p, studies, appointments });
 });
 
+app.put('/api/patients/:id', auth, roles('DOCTOR', 'ADMIN'), wrap((req, res) => {
+  const id = Number(req.params.id);
+  const p = get('SELECT * FROM patients WHERE id = ?', id);
+  if (!p) return res.status(404).json({ error: 'Patient not found.' });
+
+  const b = req.body || {};
+  const fullName = (b.full_name || p.full_name).trim();
+  const age = b.age != null && b.age !== '' ? Number(b.age) : p.age;
+  const gender = b.gender || p.gender;
+  const bloodGroup = b.blood_group || p.blood_group;
+  const contactPhone = b.contact_phone !== undefined ? b.contact_phone : p.contact_phone;
+  const emergencyContact = b.emergency_contact !== undefined ? b.emergency_contact : p.emergency_contact;
+  const medicalHistory = b.medical_history_notes !== undefined ? b.medical_history_notes : p.medical_history_notes;
+
+  db.exec('BEGIN IMMEDIATE TRANSACTION');
+  try {
+    run(`UPDATE patients SET full_name=?, age=?, gender=?, blood_group=?, contact_phone=?, emergency_contact=?, medical_history_notes=? WHERE id=?`,
+      fullName, age, gender, bloodGroup, contactPhone, emergencyContact, medicalHistory, id);
+    if (p.user_id) {
+      run(`UPDATE users SET full_name=? WHERE id=?`, fullName, p.user_id);
+    }
+    audit(req.user, 'EDIT_PATIENT', 'Patient', id, `Updated details for ${fullName}`, ip(req));
+    db.exec('COMMIT');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+  res.json(get('SELECT * FROM patients WHERE id = ?', id));
+}));
+
+app.delete('/api/patients/:id', auth, roles('DOCTOR', 'ADMIN'), wrap((req, res) => {
+  const id = Number(req.params.id);
+  const p = get('SELECT * FROM patients WHERE id = ?', id);
+  if (!p) return res.status(404).json({ error: 'Patient not found.' });
+
+  db.exec('BEGIN IMMEDIATE TRANSACTION');
+  try {
+    run('DELETE FROM appointments WHERE patient_id = ?', id);
+    const studies = all('SELECT id FROM xray_studies WHERE patient_id = ?', id);
+    for (const s of studies) {
+      run('DELETE FROM doctor_reports WHERE study_id = ?', s.id);
+      const preds = all('SELECT id FROM ai_predictions WHERE study_id = ?', s.id);
+      for (const pr of preds) {
+        run('DELETE FROM explanations WHERE prediction_id = ?', pr.id);
+      }
+      run('DELETE FROM ai_predictions WHERE study_id = ?', s.id);
+      run('DELETE FROM xray_studies WHERE id = ?', s.id);
+    }
+    run('DELETE FROM patients WHERE id = ?', id);
+    if (p.user_id) {
+      run('UPDATE audit_logs SET user_id = NULL WHERE user_id = ?', p.user_id);
+      run('DELETE FROM users WHERE id = ?', p.user_id);
+    }
+    audit(req.user, 'DELETE_PATIENT', 'Patient', id, `Deleted patient ${p.full_name} (${p.mrn})`, ip(req));
+    db.exec('COMMIT');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+  res.json({ ok: true, message: `Patient ${p.full_name} deleted successfully.` });
+}));
+
 // ---------- doctors ----------
 app.get('/api/doctors', auth, (_req, res) => res.json(all('SELECT * FROM doctors ORDER BY full_name')));
+
+app.put('/api/doctors/:id', auth, roles('DOCTOR', 'ADMIN'), wrap((req, res) => {
+  const id = Number(req.params.id);
+  const d = get('SELECT * FROM doctors WHERE id = ?', id);
+  if (!d) return res.status(404).json({ error: 'Doctor not found.' });
+
+  const b = req.body || {};
+  const fullName = (b.full_name || d.full_name).trim();
+  const specialization = b.specialization || d.specialization;
+  const qualification = b.qualification || d.qualification;
+  const experienceYears = b.experience_years != null && b.experience_years !== '' ? Number(b.experience_years) : d.experience_years;
+  const hospitalClinic = b.hospital_clinic || d.hospital_clinic;
+  const schedule = b.availability_schedule || d.availability_schedule;
+
+  db.exec('BEGIN IMMEDIATE TRANSACTION');
+  try {
+    run(`UPDATE doctors SET full_name=?, specialization=?, qualification=?, experience_years=?, hospital_clinic=?, availability_schedule=? WHERE id=?`,
+      fullName, specialization, qualification, experienceYears, hospitalClinic, schedule, id);
+    if (d.user_id) {
+      run(`UPDATE users SET full_name=? WHERE id=?`, fullName, d.user_id);
+    }
+    audit(req.user, 'EDIT_DOCTOR', 'Doctor', id, `Updated details for ${fullName}`, ip(req));
+    db.exec('COMMIT');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+  res.json(get('SELECT * FROM doctors WHERE id = ?', id));
+}));
+
+app.delete('/api/doctors/:id', auth, roles('DOCTOR', 'ADMIN'), wrap((req, res) => {
+  const id = Number(req.params.id);
+  const d = get('SELECT * FROM doctors WHERE id = ?', id);
+  if (!d) return res.status(404).json({ error: 'Doctor not found.' });
+
+  db.exec('BEGIN IMMEDIATE TRANSACTION');
+  try {
+    run('UPDATE xray_studies SET doctor_id = NULL WHERE doctor_id = ?', id);
+    const fallbackDoc = get('SELECT id FROM doctors WHERE id != ? LIMIT 1', id);
+    if (fallbackDoc) {
+      run('UPDATE doctor_reports SET doctor_id = ? WHERE doctor_id = ?', fallbackDoc.id, id);
+    }
+    run('DELETE FROM appointments WHERE doctor_id = ?', id);
+    run('DELETE FROM doctors WHERE id = ?', id);
+    if (d.user_id && d.user_id !== req.user.id) {
+      run('UPDATE audit_logs SET user_id = NULL WHERE user_id = ?', d.user_id);
+      run('DELETE FROM users WHERE id = ?', d.user_id);
+    }
+    audit(req.user, 'DELETE_DOCTOR', 'Doctor', id, `Deleted doctor profile ${d.full_name}`, ip(req));
+    db.exec('COMMIT');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+  res.json({ ok: true, message: `Doctor profile ${d.full_name} removed.` });
+}));
 
 // ---------- studies ----------
 app.get('/api/studies', auth, (req, res) => {

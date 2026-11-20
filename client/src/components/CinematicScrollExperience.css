@@ -1,0 +1,552 @@
+/* ==========================================================================
+   Chest-X AI — Cinematic Frame-by-Frame Scroll Experience
+   Dark Medical Tech Aesthetic: Midnight Navy (#040812), Electric Cyan (#00f2fe)
+   ========================================================================== */
+
+/* Outer scroll container */
+.cx-cinematic-wrapper {
+  position: relative;
+  width: 100%;
+  background-color: #030712;
+  color: #ffffff;
+  overflow: visible;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Pinned Viewport Container (Pins for 500vh duration) */
+.cx-cinematic-pin {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Background Canvas / Video Layer */
+.cx-video-canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cx-scrub-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Cinematic Dark Vignette & Gradient Overlays */
+.cx-video-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  /* Left dark gradient protects text legibility while central/right thorax remains vivid */
+  background: 
+    linear-gradient(90deg, rgba(3, 7, 18, 0.94) 0%, rgba(3, 7, 18, 0.72) 36%, rgba(3, 7, 18, 0.15) 75%),
+    linear-gradient(180deg, rgba(3, 7, 18, 0.8) 0%, rgba(3, 7, 18, 0.0) 20%, rgba(3, 7, 18, 0.6) 85%, rgba(3, 7, 18, 0.95) 100%);
+}
+
+.cx-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.15;
+  background-image: 
+    linear-gradient(rgba(0, 242, 254, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 254, 0.15) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Glass Floating Navbar */
+.cx-cinematic-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  padding: 0 4vw;
+  background: linear-gradient(180deg, rgba(3, 7, 18, 0.85) 0%, rgba(3, 7, 18, 0) 100%);
+  pointer-events: auto;
+}
+
+.cx-header-inner {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cx-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.cx-brand-emblem {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #00f2fe 0%, #0066cc 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
+}
+
+.cx-brand-emblem svg {
+  width: 20px;
+  height: 20px;
+  fill: #040812;
+}
+
+.cx-brand-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.cx-brand-name {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.cx-brand-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #00f2fe;
+  text-transform: uppercase;
+}
+
+/* Nav links */
+.cx-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.cx-header-nav a,
+.cx-header-nav button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  padding: 6px 0;
+  text-decoration: none;
+}
+
+.cx-header-nav a:hover,
+.cx-header-nav button:hover {
+  color: #00f2fe;
+}
+
+/* Live AI Status Badge */
+.cx-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #00f2fe;
+}
+
+.cx-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00f2fe;
+  box-shadow: 0 0 10px #00f2fe;
+  animation: cx-pulse 2s infinite ease-in-out;
+}
+
+@keyframes cx-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.cx-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cx-btn-login {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cx-btn-login:hover {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: #00f2fe;
+  color: #00f2fe;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.25);
+}
+
+.cx-btn-cta {
+  background: linear-gradient(135deg, #00f2fe 0%, #0284c7 100%);
+  color: #040812;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+}
+
+.cx-btn-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px rgba(0, 242, 254, 0.5);
+  color: #000;
+}
+
+/* ==========================================================================
+   Center Stage Storyboard Text Layer
+   ========================================================================== */
+.cx-storyboard-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.cx-scene-container {
+  position: absolute;
+  top: 50%;
+  left: 6vw;
+  transform: translateY(-50%);
+  max-width: 620px;
+  width: 90%;
+  pointer-events: auto;
+  will-change: opacity, transform;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cx-scene-active {
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  animation: cxSceneIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cx-scene-inactive {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+@keyframes cxSceneIn {
+  from {
+    opacity: 0;
+    transform: translateY(-46%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+}
+
+.cx-phase-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #00f2fe;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  backdrop-filter: blur(8px);
+}
+
+.cx-scene-headline {
+  font-size: clamp(34px, 5.2vw, 68px);
+  font-weight: 900;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0 0 18px 0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+}
+
+.cx-scene-headline span {
+  display: block;
+}
+
+.cx-scene-headline .cx-accent-line {
+  color: #00f2fe;
+  background: linear-gradient(135deg, #ffffff 30%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cx-scene-copy {
+  font-size: clamp(15px, 1.35vw, 19px);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 0 28px 0;
+  max-width: 520px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.cx-scene-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00f2fe 0%, #0284c7 100%);
+  color: #040812;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 28px rgba(0, 242, 254, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.cx-scene-cta-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 40px rgba(0, 242, 254, 0.65);
+}
+
+.cx-scene-cta-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: #040812;
+  transition: transform 0.2s ease;
+}
+
+.cx-scene-cta-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   Telemetry & HUD System Overlays
+   ========================================================================== */
+.cx-hud-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4vw;
+  background: linear-gradient(0deg, rgba(3, 7, 18, 0.9) 0%, rgba(3, 7, 18, 0) 100%);
+  pointer-events: none;
+}
+
+.cx-telemetry-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cx-telemetry-item b {
+  color: #00f2fe;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+/* Scroll Scrub Progress Indicator */
+.cx-progress-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  pointer-events: auto;
+}
+
+.cx-scene-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+}
+
+.cx-scene-counter span {
+  color: #00f2fe;
+}
+
+.cx-scrub-bar-track {
+  width: 140px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cx-scrub-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7 0%, #00f2fe 100%);
+  box-shadow: 0 0 10px #00f2fe;
+  border-radius: 999px;
+  width: 0%;
+  transition: width 0.05s linear;
+}
+
+.cx-scrub-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #00f2fe;
+  min-width: 42px;
+  text-align: right;
+}
+
+/* Scroll Prompt Indicator */
+.cx-scroll-prompt {
+  position: absolute;
+  bottom: 84px;
+  left: 6vw;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.cx-prompt-mouse {
+  width: 18px;
+  height: 28px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(0, 242, 254, 0.6);
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.cx-prompt-wheel {
+  width: 3px;
+  height: 6px;
+  background: #00f2fe;
+  border-radius: 2px;
+  margin-top: 5px;
+  animation: cx-wheel-drop 1.8s infinite ease-in-out;
+}
+
+@keyframes cx-wheel-drop {
+  0% { transform: translateY(0); opacity: 1; }
+  80% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+.cx-prompt-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .cx-header-nav {
+    display: none;
+  }
+  .cx-scene-headline {
+    font-size: clamp(30px, 6vw, 48px);
+  }
+  .cx-telemetry-left {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .cx-scene-container {
+    left: 5vw;
+    width: 90%;
+  }
+  .cx-scrub-bar-track {
+    width: 90px;
+  }
+  .cx-scroll-prompt {
+    bottom: 74px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-live-dot {
+    animation: none;
+  }
+  .cx-prompt-wheel {
+    animation: none;
+  }
+}
